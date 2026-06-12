@@ -1,11 +1,168 @@
-/* 
+/* To Do List */
+body {
+    min-height: 100vh;
+    font-family: "Playfair Display", serif;
+    background-color: #23272E;
+}
 
-    You can write your own styles here...
-    
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+ul {
+    margin: 0;
+    width: 100%;
+}
 
-*/
+h1 {
+    font-size: 7rem;
+    color: #dcdcdc;
+    text-shadow: 0px 0px 5px #dcdcdc;
+}
+
+.main-container,
+.todo-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+    margin-top: 7rem;
+    align-items: center
+}
+
+.todo-list {
+    width: 50rem;
+    background-color: #F8F8F8;
+    border: 1px solid black;
+    font-size: 1.5rem;
+    padding: 2.5rem;
+    align-items: start;
+    position: relative;
+    transition: all 0.6s ease;
+}
+
+.todo-list::before,
+.todo-list::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    right: 5px;
+    height: 100%;
+    background: #F8F8F8;
+    border: 1px solid black;
+    z-index: -1;
+}
+
+.todo-list::after {
+    bottom: -7.5px;
+    left: 5px;
+    right: 5px;
+    transition: all 1s ease;
+}
+.todo-list::before {
+    bottom: -14px;
+    left: 10px;
+    right: 10px;
+    transition: all 0.5s ease;
+}
+
+.todo-list:hover::after,
+.todo-list:hover::before {
+    bottom: 0px;
+}
+
+
+.list {
+    width: 100%;
+}
+
+.task {
+    width: 100%;
+    color: #696969;
+    border-top: 1px solid black;
+    padding: 0.5rem;
+    position: relative;
+}
+
+.done-task {
+    text-decoration: line-through;
+}
+
+.close-button {
+    opacity: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    bottom: 0.8rem;
+    transition: all 0.3s;
+}
+
+.task:hover .close-button {
+    opacity: 1;
+}
+
+input {
+    width: 100%;
+    border: none;
+    background-color: #F8F8F8;
+    margin-left: 2.5rem;
+    padding-bottom: 0.5rem;
+    ;
+}
+
+input:focus {
+    outline: none;
+}
+
+ul li {
+    list-style: none;
+}
+
+.items-left {
+    width: 100%;
+    font-size: 1.2rem;
+    border-top: 1px solid black;
+    padding-top: 0.5rem;
+}
+
+button {
+    opacity: 0;
+    position: absolute;
+    right: 3rem;
+    bottom: 0.6rem;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #F8F8F8;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: black;
+    color: #F8F8F8;
+}
+
+.task:hover button {
+    opacity: 1
+}
+
+/* Animación li */
+li {
+    animation: aparecer 0.5s
+}
+
+h2 {
+    margin-top: 2rem;
+    animation: aparecer 0.5s
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        translate: 0px -30px;
+    }
+
+    to {
+        opacity: 1;
+        translate: 0px 0px;
+    }
+}
