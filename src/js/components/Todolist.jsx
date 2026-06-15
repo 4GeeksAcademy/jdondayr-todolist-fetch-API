@@ -10,11 +10,14 @@ const Todolist = () => {
     // Async function to add tasks to database
     async function addTaskToDatabase(ev) {
         if (ev.key === "Enter") {
-            if (taskInputValue === "") return;
             let newTask = {
                     "label": taskInputValue,
                     "is_done": false
                 }
+            if (taskInputValue === "") return;
+            for (let task of tasks) {
+                if (task.label === taskInputValue) return
+            }
             setTaskInputValue("");
             try {
                 const response = await fetch("https://playground.4geeks.com/todo/todos/juanitodr94", {
