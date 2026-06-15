@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 // Components imports
 import Todolist from "./Todolist.jsx";
 
 const App = () => {
+
 	return (
 		<div className="main-container">
-			<h1>to-dos</h1>
 			<Todolist />
 		</div>
 	);

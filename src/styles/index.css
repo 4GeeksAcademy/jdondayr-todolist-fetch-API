@@ -14,20 +14,24 @@ h1 {
     font-size: 7rem;
     color: #dcdcdc;
     text-shadow: 0px 0px 5px #dcdcdc;
+    text-align: center;
 }
 
 .main-container,
 .todo-list {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
 }
 
 .main-container {
     margin-top: 7rem;
-    align-items: center
+    align-items: center;
+    gap: 3rem;
+
 }
 
 .todo-list {
+    flex-direction: column;
     width: 50rem;
     background-color: #F8F8F8;
     border: 1px solid black;
@@ -99,16 +103,16 @@ h1 {
     opacity: 1;
 }
 
-input {
+.task-input {
     width: 100%;
     border: none;
     background-color: #F8F8F8;
     margin-left: 2.5rem;
     padding-bottom: 0.5rem;
-    ;
+    font-size: 1.5rem;
 }
 
-input:focus {
+.task-input:focus {
     outline: none;
 }
 
@@ -123,7 +127,7 @@ ul li {
     padding-top: 0.5rem;
 }
 
-button {
+.task-button {
     opacity: 0;
     position: absolute;
     right: 3rem;
@@ -136,12 +140,12 @@ button {
     transition: all 0.3s;
 }
 
-button:hover {
+.task-button:hover {
     background-color: black;
     color: #F8F8F8;
 }
 
-.task:hover button {
+.task:hover .task-button {
     opacity: 1
 }
 
@@ -150,9 +154,49 @@ li {
     animation: aparecer 0.5s
 }
 
-h2 {
-    margin-top: 2rem;
+h4 {
+    margin-top: 1rem;
     animation: aparecer 0.5s
+}
+
+.registerAndLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 9rem;
+}
+
+label {
+    font-size: 1rem;
+    color: white;
+}
+
+button {
+    border: none;
+    margin-left: 0.5rem;
+    background-color: #23272E;
+    color: #F8F8F8;
+    font-size: 1rem;
+    border-radius: 10px;
+    transition: all 0.5s;
+    margin-top: 2rem;
+}
+
+input {
+    font-size: 1rem;
+}
+
+.registerBox, .loginBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input {
+    display: flex; 
+    flex-direction: column;
+    gap: 0.3rem;
 }
 
 @keyframes aparecer {

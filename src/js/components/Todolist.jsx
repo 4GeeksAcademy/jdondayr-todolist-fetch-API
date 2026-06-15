@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Todolist = () => {
 
@@ -6,14 +6,36 @@ const Todolist = () => {
     const [taskInputValue, setTaskInputValue] = useState("");
     const [itemsLeft, setItemsLeft] = useState(0);
     const [tasks, setTasks] = useState([]);
-    const [completedTasks, setCompletedTasks] = useState([]);
 
+    // Function to add task to the list
     const addTask = (ev) => {
         if (ev.key === "Enter") {
             if (taskInputValue === "" || tasks.includes(taskInputValue)) return;
             setTasks([...tasks, taskInputValue]);
             setTaskInputValue("");
             setItemsLeft(prev => prev + 1);
+            let newTask = {
+                "label": taskInputValue,
+                "is_done": false
+            }
+            addTaskToDatabase(newTask);
+        }
+    }
+
+    // Async function to add tasks to database
+    async function addTaskToDatabase(task) {
+        try {
+            const response = await fetch("https://playground.4geeks.com/todo/todos/juanitodr94", {
+                method: "POST",
+                body: JSON.stringify(task),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            getUserTasks()
+        }
+        catch (error) {
+            console.log("There was an error:", error)
         }
     }
 
@@ -25,57 +47,81 @@ const Todolist = () => {
         setItemsLeft(prev => prev - 1);
     }
 
-    const removeTaskFromCompletedTasks = (indexToRemove) => {
-        if (itemsLeft < 0) return;
-        const updatedTasks = completedTasks.filter((task, index) => index != indexToRemove);
-        setCompletedTasks(updatedTasks);
+    // Async function to delete a task
+    async function deleteTaskFromDatabase(id) {
+        try {
+            const response = await fetch("https://playground.4geeks.com/todo/todos/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            getUserTasks()
+        }
+        catch (error) {
+            console.log("There was an error: " + error);
+        }
     }
 
-    // Toggle between lists functions
-    const completeTask = (indexOfTheTaskToComplete) => {
-        setCompletedTasks([...completedTasks, tasks.filter((task, index) => {
-            if (index === indexOfTheTaskToComplete) return task;
-        })]);
-        removeTaskFromTasks(indexOfTheTaskToComplete)
+    // Async function to delete all tasks
+    async function deleteAllTasksFromDatabase() {
+        try {
+            tasks.map((task, index) => {
+                deleteTaskFromDatabase(task.id)
+                removeTaskFromTasks(index)
+            })
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    
+    // Async function to get tasks and user
+    async function getUserTasks() {
+        try {
+            const response = await fetch("https://playground.4geeks.com/todo/users/juanitodr94");
+            if (response.status === 404) alert("User juanitodr94 not found, maybe deleted? try to create again")
+            if (!response.ok) throw new Error("There was an error: " + response.statusText);
+            const data = await response.json();
+            const userTasks = data.todos;
+            setTasks(userTasks)
+        }
+        catch (error) {
+            console.log("There was an error", error)
+        }
     }
 
-    const returnTaskToIncomplete = (indexOfTheTaskToReturn) => {
-        setTasks([...tasks, completedTasks.filter((task, index) => {
-           if (index === indexOfTheTaskToReturn) return task;
-        })]);
-        removeTaskFromCompletedTasks(indexOfTheTaskToReturn);
-        setItemsLeft(prev => prev + 1);
-    }
+    // useEffect to get users when the component is loaded
+    useEffect(() => {
+        getUserTasks()
+    }, [])
 
     const tasksList = tasks.map((task, index) => {
-        return  <li key={index} className="task">{task}
-                    <button onClick={() => completeTask(index)}>Completed</button>
-                    <span className="close-button" onClick={()=> removeTaskFromTasks(index)}>
-                        <i className="fa-solid fa-trash-can"></i>
-                    </span>
-                </li>
+        return (
+            <li key={index} className="task">{task.label}
+                <span className="close-button" onClick={() => {
+                    deleteTaskFromDatabase(task.id);
+                    removeTaskFromTasks(index)
+                }}>
+                    <i className="fa-solid fa-trash-can"></i>
+                </span>
+            </li>
+        )
     })
 
-    const completedTasksList = completedTasks.map((task, index) => {
-        return  <li key={index} className="task done-task">{task}
-                    <button onClick={() => returnTaskToIncomplete(index)}>Return to incompleted list</button>
-                    <span className="close-button" onClick={()=> removeTaskFromCompletedTasks(index)}>
-                        <i className="fa-solid fa-trash-can"></i>
-                    </span>
-                </li>
-    })
+
 
     return (
-        <div className="todo-list">
-            <input type="text" onChange={(ev) => setTaskInputValue(ev.target.value)} onKeyDown={addTask} value={taskInputValue} placeholder="Insert your task" />
-            <ul className="list">
-                {tasksList}
-            </ul>
-            <span className="items-left">{itemsLeft >= 1 ? `${itemsLeft} items left` : "There is no available tasks, please add one"}</span>
-            <h2 style={{display: (completedTasks.length > 0 ? "block" : "none")}}>Completed tasks</h2>
-            <ul className="completed-list">
-                {completedTasksList}
-            </ul>
+        <div>
+            <h1>to-dos</h1>
+            <div className="todo-list">
+                <input type="text" className="task-input" onChange={(ev) => setTaskInputValue(ev.target.value)} onKeyDown={addTask} value={taskInputValue} placeholder="Insert your task" />
+                <h4 style={{ display: (tasks.length >= 1 ? "block" : "none") }}>Pending tasks</h4>
+                <ul className="list">
+                    {tasksList}
+                </ul>
+                <button onClick={deleteAllTasksFromDatabase}>Delete all tasks</button>
+            </div>
         </div>
     )
 }
