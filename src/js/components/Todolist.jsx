@@ -7,44 +7,29 @@ const Todolist = () => {
     const [itemsLeft, setItemsLeft] = useState(0);
     const [tasks, setTasks] = useState([]);
 
-    // Function to add task to the list
-    const addTask = (ev) => {
-        if (ev.key === "Enter") {
-            if (taskInputValue === "" || tasks.includes(taskInputValue)) return;
-            setTasks([...tasks, taskInputValue]);
-            setTaskInputValue("");
-            setItemsLeft(prev => prev + 1);
-            let newTask = {
-                "label": taskInputValue,
-                "is_done": false
-            }
-            addTaskToDatabase(newTask);
-        }
-    }
-
     // Async function to add tasks to database
-    async function addTaskToDatabase(task) {
-        try {
-            const response = await fetch("https://playground.4geeks.com/todo/todos/juanitodr94", {
-                method: "POST",
-                body: JSON.stringify(task),
-                headers: {
-                    "Content-Type": "application/json"
+    async function addTaskToDatabase(ev) {
+        if (ev.key === "Enter") {
+            if (taskInputValue === "") return;
+            let newTask = {
+                    "label": taskInputValue,
+                    "is_done": false
                 }
-            })
-            getUserTasks()
+            setTaskInputValue("");
+            try {
+                const response = await fetch("https://playground.4geeks.com/todo/todos/juanitodr94", {
+                    method: "POST",
+                    body: JSON.stringify(newTask),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                getUserTasks()
+            }
+            catch (error) {
+                console.log("There was an error:", error)
+            }
         }
-        catch (error) {
-            console.log("There was an error:", error)
-        }
-    }
-
-    // Remove functions
-    const removeTaskFromTasks = (indexToRemove) => {
-        if (itemsLeft < 0) return;
-        const updatedTasks = tasks.filter((task, index) => index != indexToRemove);
-        setTasks(updatedTasks);
-        setItemsLeft(prev => prev - 1);
     }
 
     // Async function to delete a task
@@ -68,7 +53,6 @@ const Todolist = () => {
         try {
             tasks.map((task, index) => {
                 deleteTaskFromDatabase(task.id)
-                removeTaskFromTasks(index)
             })
         }
         catch (error) {
@@ -96,12 +80,12 @@ const Todolist = () => {
         getUserTasks()
     }, [])
 
+    // Print on website my tasks
     const tasksList = tasks.map((task, index) => {
         return (
             <li key={index} className="task">{task.label}
                 <span className="close-button" onClick={() => {
                     deleteTaskFromDatabase(task.id);
-                    removeTaskFromTasks(index)
                 }}>
                     <i className="fa-solid fa-trash-can"></i>
                 </span>
@@ -109,19 +93,19 @@ const Todolist = () => {
         )
     })
 
-
+    // Return of the component
 
     return (
         <div>
             <h1>to-dos</h1>
             <div className="todo-list">
-                <input type="text" className="task-input" onChange={(ev) => setTaskInputValue(ev.target.value)} onKeyDown={addTask} value={taskInputValue} placeholder="Insert your task" />
+                <input type="text" className="task-input" onChange={(ev) => setTaskInputValue(ev.target.value)} onKeyDown={addTaskToDatabase} value={taskInputValue} placeholder="Insert your task" />
                 <h4 style={{ display: (tasks.length >= 1 ? "block" : "none") }}>Pending tasks</h4>
                 <ul className="list">
                     {tasksList}
                 </ul>
                 <h4>{(tasks.length === 0 ? "No tasks available, please add one" : `${tasks.length} items left`)}</h4>
-                <button onClick={deleteAllTasksFromDatabase}>Delete all tasks</button>
+                <button style={{display: (tasks.length === 0 ? "none" : "block")}} onClick={deleteAllTasksFromDatabase}>Delete all tasks</button>
             </div>
         </div>
     )
