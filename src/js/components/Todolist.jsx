@@ -120,6 +120,7 @@ const Todolist = () => {
                 <ul className="list">
                     {tasksList}
                 </ul>
+                <h4>{(tasks.length === 0 ? "No tasks available, please add one" : `${tasks.length} items left`)}</h4>
                 <button onClick={deleteAllTasksFromDatabase}>Delete all tasks</button>
             </div>
         </div>
