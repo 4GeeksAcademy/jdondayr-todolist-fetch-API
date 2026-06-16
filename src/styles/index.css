@@ -17,6 +17,11 @@ h1 {
     text-align: center;
 }
 
+p {
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
 .main-container,
 .todo-list {
     display: flex;
@@ -197,6 +202,16 @@ input {
     display: flex; 
     flex-direction: column;
     gap: 0.3rem;
+}
+
+.createUserSpan {
+    text-decoration: underline;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.createUserSpan:hover {
+    text-shadow: 0px 0px 2px black;
 }
 
 @keyframes aparecer {

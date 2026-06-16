@@ -67,7 +67,7 @@ const Todolist = () => {
     async function getUserTasks() {
         try {
             const response = await fetch("https://playground.4geeks.com/todo/users/juanitodr94");
-            if (response.status === 404) alert("User juanitodr94 not found, maybe deleted? try to create again")
+            if (response.status === 404) alert("User juanitodr94 not found. It's been deleted. Press the button above to create it again")
             if (!response.ok) throw new Error("There was an error: " + response.statusText);
             const data = await response.json();
             const userTasks = data.todos;
@@ -82,6 +82,24 @@ const Todolist = () => {
     useEffect(() => {
         getUserTasks()
     }, [])
+
+    // Function to create juanitodr94 user in case that it's been removed
+    async function createUser() {
+        try {
+            const response = await fetch("https://playground.4geeks.com/todo/users/juanitodr94", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"}
+            })
+            if (response.ok) alert("User created succesfully!")
+            else if (response.status === 400) {
+                alert("User juanitodr94 alredy exists");
+                throw new Error("User alredy exists");
+            }
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
 
     // Print on website my tasks
     const tasksList = tasks.map((task, index) => {
@@ -109,6 +127,7 @@ const Todolist = () => {
                 </ul>
                 <h4>{(tasks.length === 0 ? "No tasks available, please add one" : `${tasks.length} items left`)}</h4>
                 <button style={{display: (tasks.length === 0 ? "none" : "block")}} onClick={deleteAllTasksFromDatabase}>Delete all tasks</button>
+                <p>If user doesn't exist, you can click <span onClick={createUser} className="createUserSpan">here</span> to create</p>
             </div>
         </div>
     )
