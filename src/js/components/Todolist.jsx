@@ -67,7 +67,7 @@ const Todolist = () => {
     async function getUserTasks() {
         try {
             const response = await fetch("https://playground.4geeks.com/todo/users/juanitodr94");
-            if (response.status === 404) alert("User juanitodr94 not found. It's been deleted. Press the button above to create it again")
+            if (response.status === 404) alert("User juanitodr94 not found. It's been deleted. Press the button below to create it again")
             if (!response.ok) throw new Error("There was an error: " + response.statusText);
             const data = await response.json();
             const userTasks = data.todos;
